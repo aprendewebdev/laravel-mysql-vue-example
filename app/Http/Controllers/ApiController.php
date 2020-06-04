@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\User;
+use App\Todo;
 
 class ApiController extends Controller
 {
@@ -14,20 +15,35 @@ class ApiController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getTodos()
+    public function get()
     {
       $user = User::find(Auth::id());
       
-      if (!$user) {
-        return response()->json([
-          'success' => false,
-          'error' => 'user not autenticated',
-        ]);
-      }
-
       return response()->json([
         'success' => true,
         'results' => $user->todos,
+      ]);
+    }
+
+    public function create(Request $request) {
+      $description = $request->input('description');
+
+      $todo = Todo::create([
+        "description" => $description,
+        "user_id" => Auth::id(),
+      ]);
+
+      return response()->json([
+        "success" => true,
+        "results" => [$todo]
+      ]);
+    }
+
+    public function delete($id) {
+      Todo::destroy($id);
+
+      return response()->json([
+        'success' => true,
       ]);
     }
 }

@@ -20,4 +20,7 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
-Route::get('api/todos', 'ApiController@getTodos');
+
+Route::get('api/todos', 'ApiController@get')->middleware('auth');
+Route::post('api/todos', 'ApiController@create')->middleware('auth');
+Route::delete('api/todos/{id}', 'ApiController@delete')->middleware('auth');
